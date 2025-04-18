@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "spatial-project"
+version = "0.1.0"
+description = "Python GIS environment with GeoPandas and Jupyter"
+authors = ["Twoje Imię <twoj@email.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+geopandas = "^0.14"
+shapely = "^2.0"
+pyproj = "^3.6"
+rtree = "^1.2"
+matplotlib = "^3.8"
+jupyterlab = "^4.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
