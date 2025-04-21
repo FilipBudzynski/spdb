@@ -2,8 +2,12 @@
 Porównanie możliwości realizacji zapytań o dane przestrzenne w środowiskach R/Python oraz PostGIS lub
 innym wybranym SZPBD
 
-## [Środowisko testowe](./docs/environment.md)
+[Środowisko testowe](./docs/environment.md)
 
-## [Wykorzystane dane](./docs/data.md)
+[Wykorzystane dane](./docs/data.md)
 
-## [Jak uruchomić](./docs/how-to.md)
+[Opis danych](.docs/data-desc.md)
+
+[Testy](.docs/tests.md)
+
+[Jak uruchomić](./docs/how-to.md)
