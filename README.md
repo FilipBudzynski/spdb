@@ -16,3 +16,26 @@ Wersje używanych narzędzi:
 - Python: 3.11
 - GeoPandas: 0.10.0
 
+## Wykorzystane dane
+```
+http://download.geofabrik.de/europe/poland/mazowieckie-latest.osm.pbf
+```
+
+Z geofabrik pobrano dane z województwa mazowieckiego. Następnie dane te okrojono za pomoca **osmosis** w celu zmieniejszenia zajmowanego miejsca. 
+Wyborano obszar obszar Warszawy, dokładniej:
+```bash
+osmosis --read-pbf mazowieckie-latest.osm.pbf \
+        --bounding-box top=52.4 left=20.9 bottom=52.2 right=21.2 \
+        --write-pbf warszawa.osm.pbf
+```
+
+## Sposób załadowania danych do postGIS
+Do załadowania danych do postgreSQL z postGIS wykorzystano **osm2pgsql**. Pobrane dane załadowano przy użyciu komendy:
+```bash
+osm2pgsql -d gis_db --create --slim -G --hstore -C 2048 --number-processes 4 -U user mazowieckie-latest.osm.pbf
+```
+
+Aby dane zostały poprawnie zaimportowane dodano rozszerzenie **hstore** poprzez: 
+```sql
+CREATE EXTENSION hstore;
+```

@@ -2,12 +2,9 @@ version: '3.9'
 
 services:
   postgis:
-    image: postgis/postgis:16-3.4
+    build:
+      context: ./postgis
     container_name: postgis-db
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: gis_db
     ports:
       - "5432:5432"
     volumes:
@@ -31,6 +28,7 @@ services:
 
 volumes:
   postgis-data:
+    driver: local
 
 networks:
   gis-net:
