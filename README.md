@@ -6,8 +6,8 @@ innym wybranym SZPBD
 
 [Wykorzystane dane](./docs/data.md)
 
-[Opis danych](.docs/data-desc.md)
+[Opis danych](./docs/data-desc.md)
 
-[Testy](.docs/tests.md)
+[Testy](./docs/tests.md)
 
 [Jak uruchomić](./docs/how-to.md)
