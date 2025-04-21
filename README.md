@@ -30,12 +30,26 @@ osmosis --read-pbf mazowieckie-latest.osm.pbf \
 ```
 
 ## Sposób załadowania danych do postGIS
-Do załadowania danych do postgreSQL z postGIS wykorzystano **osm2pgsql**. Pobrane dane załadowano przy użyciu komendy:
+Do załadowania danych wykorzystano **osm2pgsql**. Pobrane dane załadowano przy użyciu komendy:
 ```bash
-osm2pgsql -d gis_db --create --slim -G --hstore -C 2048 --number-processes 4 -U user mazowieckie-latest.osm.pbf
+outdated - osm2pgsql -d gis_db --create --slim -G --hstore -C 2048 --number-processes 4 -U user warszawa.osm.pbf
+
+osm2pgsql -d gis_db --create --slim --hstore --style /usr/share/osm2pgsql/default.style /data/warszawa.osm.pbf
 ```
 
 Aby dane zostały poprawnie zaimportowane dodano rozszerzenie **hstore** poprzez: 
 ```sql
 CREATE EXTENSION hstore;
 ```
+
+## Jak podłączyć się do PostgreSQL?
+Aby połączyć się do PostgreSQL należy uruchomić serwer poprzez:
+```bash
+docker-compose up
+```
+Następnie połączyć się z serwerem poprzez:
+```bash
+psql -h localhost -p 5432 -U postgres  
+```
+
+

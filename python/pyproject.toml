@@ -1,12 +1,13 @@
 [tool.poetry]
 name = "spatial-project"
 version = "0.1.0"
-description = "Python GIS environment with GeoPandas and Jupyter"
-authors = ["Twoje Imię <twoj@email.com>"]
+description = "Python GIS environment with GeoPandas and psycopg2"
+authors = ["Filip Budzynski", "Dawid Budzynski"]
 
 [tool.poetry.dependencies]
 python = "^3.11"
 geopandas = "^0.14"
+psycopg2 = "^2.9"
 shapely = "^2.0"
 pyproj = "^3.6"
 rtree = "^1.2"
