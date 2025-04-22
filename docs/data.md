@@ -19,8 +19,6 @@ Do załadowania danych wykorzystano narzędzie **osm2pgsql**.
 
 Pobrane dane załadowano przy użyciu komendy:
 ```bash
-osm2pgsql -d gis_db --create --slim --hstore --style /usr/share/osm2pgsql/default.style /data/warszawa.osm.pbf
-
 osm2pgsql -d gis_db -U postgres -H localhost -P 5432 \
   --create --slim --hstore \
   --style /usr/share/osm2pgsql/default.style \
