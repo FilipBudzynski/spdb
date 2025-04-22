@@ -22,5 +22,5 @@ WORKDIR /workspace
 COPY pyproject.toml poetry.lock* ./
 RUN poetry install --no-root
 
-CMD ["sh"]
+CMD ["bash"]
 

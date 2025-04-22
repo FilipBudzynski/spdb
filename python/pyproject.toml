@@ -13,6 +13,7 @@ pyproj = "^3.6"
 rtree = "^1.2"
 matplotlib = "^3.8"
 jupyterlab = "^4.0"
+jupyter = "^1.1.1"
 
 [build-system]
 requires = ["poetry-core"]

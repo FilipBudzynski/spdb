@@ -1,15 +1,16 @@
 #!/bin/bash
 set -e
 
-if ! psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "SELECT 1 FROM planet_osm_point LIMIT 1;" 2>/dev/null; then
-  echo "Database is empty, loading data..."
+psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "CREATE EXTENSION IF NOT EXISTS hstore;"
 
-  # Run osm2pgsql to load the data into PostGIS
-  osm2pgsql -d "$POSTGRES_DB" -U "$POSTGRES_USER" -H localhost -P 5432 --create --slim --hstore --style /usr/share/osm2pgsql/default.style /data/warszawa.osm.pbf
+if ! psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "SELECT 1 FROM planet_osm_point LIMIT 1;" 2>/dev/null; then
+  echo "Baza danych jest pusta, ładowanie danych..."
+
+  osm2pgsql -d "$POSTGRES_DB" -U "$POSTGRES_USER" --create --slim --hstore --style /usr/share/osm2pgsql/default.style /data/warszawa.osm.pbf
   
-  echo "Data loaded into PostGIS."
+  echo "Dane załadowane do PostGIS."
 else
-  echo "Database already populated. Skipping data load."
+  echo "Baza danych już zawiera dane. Pomijam ładowanie."
 fi
 
 exec docker-entrypoint.sh "$@"

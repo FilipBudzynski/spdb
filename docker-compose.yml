@@ -9,6 +9,7 @@ services:
       - "5432:5432"
     volumes:
       - postgis-data:/var/lib/postgresql/data
+      - ./postgis/data/:/data
     networks:
       - gis-net
 
@@ -25,6 +26,8 @@ services:
       - gis-net
     depends_on:
       - postgis
+    ports:
+      - "8888:8888"
 
 volumes:
   postgis-data:
