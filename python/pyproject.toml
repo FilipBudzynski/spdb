@@ -6,9 +6,9 @@ authors = ["Filip Budzynski", "Dawid Budzynski"]
 
 [tool.poetry.dependencies]
 python = "^3.11"
-geopandas = "^0.14"
+geopandas = "^1.0.1"
 psycopg2 = "^2.9"
-shapely = "^2.0"
+shapely = "^2.1.1"
 pyproj = "^3.6"
 rtree = "^1.2"
 matplotlib = "^3.8"
@@ -17,6 +17,8 @@ jupyter = "^1.1.1"
 sqlalchemy = "^2.0.40"
 pyogrio = "^0.10.0"
 pyarrow = "^19.0.1"
+notebook = "^7.4.3"
+ipykernel = "^6.29.5"
 
 [build-system]
 requires = ["poetry-core"]
