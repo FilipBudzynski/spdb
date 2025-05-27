@@ -32,7 +32,6 @@ PostGIS:
 |--------------------------|-------------------------------|------------------------------------------------------|
 | ST_DWithin(A, B, d)      | A w odległości ≤ d od B       | np. sklep w promieniu 500 m od szkoły                |
 | ST_Distance(A, B)        | Odległość między A i B        | np. ile metrów dzieli dwa punkty                     |
-| ST_DFullyWithin(A, B, d) | Obie geometrie w odległości d | np. dwa obiekty całkowicie w promieniu d             |
 | ST_MaxDistance(A, B)     | Największa odległość punktów  | Najdalszy punkt A od najdalszego punktu B            |
 | ST_ClosestPoint(A, B)    | Najbliższy punkt na B do A    | Punkt na B najbliższy A                              |
 | ST_LongestLine(A, B)     | Najdłuższy odcinek            | Najdłuższy możliwy odcinek łączący A i B             |
@@ -42,16 +41,48 @@ PostGIS:
 Python Shapely / GeoPandas:
 | Funkcja w Pythonie                        | Odpowiednik PostGIS      | Co sprawdza?                                                        |
 |-------------------------------------------|--------------------------|---------------------------------------------------------------------|
-| `geom1.distance(geom2)`                   | ST_Distance              | Odległość między geometriami                                        |
 | `geom1.dwithin(geom2, d)`*                | ST_DWithin               | Czy geometrie są w odległości ≤ d (GeoPandas 0.14+, Shapely 2+)     |
-| `geom1.relate_pattern(geom2, pattern)`    | ST_DFullyWithin          | Można sprawdzić relację przez wzorzec DE-9IM                         |
+| `geom1.distance(geom2)`                   | ST_Distance              | Odległość między geometriami                                        |
 | `geom1.hausdorff_distance(geom2)`         | ST_MaxDistance           | Największa odległość między punktami dwóch geometrii                |
 | `shapely.ops.nearest_points(a, b)`        | ST_ClosestPoint          | Najbliższe punkty na dwóch geometriach                              |
-| `shapely.ops.substring(line, start, end)` | -                        | Fragment linii (odległość względna, podobnie jak ST_LineSubstring)   |
-| `point.within(Point(x, y).buffer(r))`     | ST_PointInsideCircle     | Czy punkt leży w kole o środku (x, y) i promieniu r                 |
+| `point.within(Point(x, y).buffer(r))`     | ST_PointInsideCircle     | **walkaround** Czy punkt leży w kole o środku (x, y) i promieniu r                 |
 
 ## możliwości złączeń zbiorów danych przestrzennych:
--- TODO
+Najczęściej wykonywane złączenie przestrzenne w **PostGIS** wykorzystują funkcję:
+- ST_Intersects,
+- ST_Contains,
+- ST_DWithin
+
+Eksperymenty dla zapytań typu:
+- `JOIN ON ST_Intersects(a.geom, b.geom)`
+- `LEFT JOIN ... WHERE ST_DWithin(...)`
+
+Aktualnie PostGIS w wersji **3.5** wspiera następujące typy złączeń:
+
+| JOIN SQL            | Opis                                                          | Typowe użycie z funkcją PostGIS              |
+| ------------------- | ------------------------------------------------------------- | -------------------------------------------- |
+| **INNER JOIN**      | Zwraca rekordy, które mają dopasowanie w obu tabelach         | `ON ST_Intersects(a.geom, b.geom)`           |
+| **LEFT JOIN**       | Zwraca wszystkie rekordy z lewej tabeli + dopasowane z prawej | np. znajdź obiekty bez przecięcia            |
+| **RIGHT JOIN**      | Wszystkie z prawej + dopasowane z lewej                       | rzadziej stosowane                           |
+| **FULL OUTER JOIN** | Wszystkie z obu tabel, dopasowane lub nie                     | rzadko w analizie przestrzennej              |
+| **CROSS JOIN**      | Iloczyn kartezjański – każda kombinacja                       | nieefektywne bez ograniczenia przestrzennego |
+| **LATERAL JOIN**    | Złączenie z podzapytaniem zależnym od wiersza                 | np. znajdź **najbliższy punkt**              |
+
+
+[ref](https://postgis.net/workshops/postgis-intro/joins.html)
+---
+
+W celu porównania molzliwosci, zapytania PostGIS zostały odwzorowane dla GeoPandas za pomocą funkcji **sjoin**:
+```
+gpd.sjoin(gdf1, gdf2, how="inner", predicate="intersects")
+```
+
+Aktualnie wspierane sposoby złączeń przestrzennych dla Geopandas to:
+- Left Outer Join
+- Right Outer Join
+- Inner Join
+
+[ref](https://geopandas.org/en/stable/gallery/spatial_joins.html)
 
 ## funkcji agregujących:
 -- TODO
