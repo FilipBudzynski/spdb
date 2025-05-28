@@ -85,4 +85,62 @@ Aktualnie wspierane sposoby złączeń przestrzennych dla Geopandas to:
 [ref](https://geopandas.org/en/stable/gallery/spatial_joins.html)
 
 ## funkcji agregujących:
--- TODO
+
+### PostGIS
+
+PostGIS oferuje szeroki zakres funkcji agregujących, które pozwalają na podsumowanie, łączenie i analizę zbiorów geometrii:
+
+| Funkcja PostGIS           | Opis                                                        | Przykład użycia/testu                                      |
+|---------------------------|-------------------------------------------------------------|------------------------------------------------------------|
+| `ST_Union(geom)`          | Łączy wiele geometrii w jedną (multi/polygon)               | Zbiorcza granica wszystkich parków w mieście               |
+| `ST_Collect(geom)`        | Tworzy kolekcję geometrii                                   | Zbiór punktów stacji metra jako MultiPoint                 |
+| `ST_Extent(geom)`         | Zwraca prostokąt ograniczający (bounding box)               | Bounding box wszystkich budynków                           |
+| `ST_MakeLine(geom)`       | Tworzy linię z punktów                                      | Trasa przez kolejne przystanki                             |
+| `ST_MakePolygon(geom)`    | Tworzy poligon z linii                                      | Obwiednia z linii granicznych                              |
+| `ST_Centroid(geom)`       | Centroid zbioru geometrii                                   | Środek ciężkości wszystkich parków                         |
+| `ST_Envelope(geom)`       | Prostokąt ograniczający dla każdej geometrii                | Bounding box dla każdego budynku                           |
+
+**Testowanie dla PostGIS:**  
+Każda z tych funkcji może być przetestowana przez wykonanie odpowiedniego zapytania SQL, np.:
+```sql
+SELECT ST_Union(way) FROM planet_osm_polygon WHERE leisure = 'park';
+SELECT COUNT(*) FROM planet_osm_point WHERE railway = 'station';
+SELECT AVG(ST_Area(way)) FROM planet_osm_polygon WHERE building IS NOT NULL;
+```
+Wyniki będą porównywane z analogicznymi operacjami w GeoPandas.
+
+---
+
+### GeoPandas
+
+GeoPandas również umożliwia agregacje przestrzenne, choć zakres funkcji jest nieco bardziej ograniczony niż w PostGIS:
+
+| Funkcja GeoPandas / Shapely         | Odpowiednik PostGIS | Opis/testowanie                                      |
+|-------------------------------------|---------------------|------------------------------------------------------|
+| `gdf.unary_union`                   | ST_Union            | Łączy wszystkie geometrie w jedną                    |
+| `gpd.tools.collect(geom)`           | ST_Collect          | Tworzy kolekcję geometrii                            |
+| `gdf.total_bounds`                  | ST_Extent           | Bounding box całego zbioru (minx, miny, maxx, maxy)  |
+| `shapely.ops.linemerge`             | ST_MakeLine         | Łączy linie w jedną linię                            |
+| `gdf.centroid`                      | ST_Centroid         | Centroid każdej geometrii                            |
+| `gdf.envelope`                      | ST_Envelope         | Bounding box dla każdej geometrii                    |
+
+**Testowanie w GeoPandas:**  
+Każda funkcja zostanie przetestowana na analogicznym zbiorze danych jak w PostGIS, np.:
+```python
+parks_union = gp_polygons[gp_polygons['leisure'] == 'park'].unary_union
+stations_count = gp_points[gp_points['railway'] == 'station'].shape[0]
+avg_building_area = gp_polygons[gp_polygons['building'].notnull()].area.mean()
+```
+Wyniki będą porównywane z wynikami zapytań SQL z PostGIS.
+
+---
+
+### Jak będą testowane możliwości?
+
+1. **Przygotowanie tych samych zbiorów danych** w PostGIS i GeoPandas (np. wszystkie parki, budynki, stacje metra).
+2. **Wykonanie tych samych operacji agregujących** (np. union, count, avg, extent) w obu środowiskach.
+3. **Porównanie wyników** – czy są zgodne, czy występują różnice (np. w dokładności, typie geometrii).
+4. **Pomiar czasu wykonania** – dla większych zbiorów porównanie wydajności.
+5. **Opis ograniczeń** – np. brak ST_Extent w GeoPandas (zastępowane przez total_bounds), brak ST_MakePolygon, itp.
+
+Do testów wybrano tylko te funkcje agregujące, które można wykonać zarówno w PostGIS, jak i w GeoPandas/Shapely na typowych danych wektorowych. Funkcje typowo rasterowe, 3D, klastrowania czy eksportu do formatów specjalnych nie będą testowane, bo nie mają odpowiedników w GeoPandas lub nie są typowe dla analiz 2D. Niemniej we wnioskach zostaną opisane wszystkie funkcje dostępne w PostGIS oraz wskazane względem nich braki w bibliotece GeoPandas.
