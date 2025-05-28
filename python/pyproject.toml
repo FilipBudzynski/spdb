@@ -19,6 +19,7 @@ pyogrio = "^0.10.0"
 pyarrow = "^19.0.1"
 notebook = "^7.4.3"
 ipykernel = "^6.29.5"
+pyrosm = "^0.6.2"
 
 [build-system]
 requires = ["poetry-core"]

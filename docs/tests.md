@@ -144,3 +144,27 @@ Wyniki będą porównywane z wynikami zapytań SQL z PostGIS.
 5. **Opis ograniczeń** – np. brak ST_Extent w GeoPandas (zastępowane przez total_bounds), brak ST_MakePolygon, itp.
 
 Do testów wybrano tylko te funkcje agregujące, które można wykonać zarówno w PostGIS, jak i w GeoPandas/Shapely na typowych danych wektorowych. Funkcje typowo rasterowe, 3D, klastrowania czy eksportu do formatów specjalnych nie będą testowane, bo nie mają odpowiedników w GeoPandas lub nie są typowe dla analiz 2D. Niemniej we wnioskach zostaną opisane wszystkie funkcje dostępne w PostGIS oraz wskazane względem nich braki w bibliotece GeoPandas.
+
+
+## Eksperymenty z ograniczoną pamięcią operacyjną
+
+1. Ograniczenie pamięci operacyjnej dla kontenera Docker z PostGIS
+
+```bash
+docker run --name postgis-test --rm -e POSTGRES_PASSWORD=postgres -d -p 5432:5432 --memory=1g postgis/postgis
+```
+Testowane operacje:
+- ST_Union na dużym zbiorze poligonów (np. wszystkie budynki)
+- ST_Intersects na dużym zbiorze punktów i poligonów (np. wszystkie budynki i parki)
+- ST_DWithin 
+
+Obserwacje:
+- Czy zapytania kończą się sukcesem?
+- Czy pojawiają się błędy OOM (Out Of Memory)?
+- Czas wykonania zapytań
+
+2. Ograniczenie pamięci operacyjnej dla kontenera Python/GeoPandas
+
+```bash
+```
+
